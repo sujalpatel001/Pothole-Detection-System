@@ -1,67 +1,70 @@
-# 🕳️ Pothole Detection System (YOLOv8 Medium)
+# 🛣️ Road Sentinel: AI Pothole Detection System
 
-An automated, deep-learning based Python application designed to detect and bounding-box potholes in unlabelled road images. 
+## 📌 Overview
+**Road Sentinel** is a high-performance, deep learning-based system designed to automatically detect and segment potholes from road imagery. Utilizing a custom-trained **YOLOv8** model, this project aims to assist in road maintenance and safety by providing precise location and segmentation data for road defects.
 
-This project uses a pretrained **YOLOv8 Medium** architecture (`keremberke/yolov8m-pothole-segmentation`) containing ~25 million parameters, enabling high-accuracy context-aware detections. It actively distinguishes between true road hazards (potholes) and visual distractors like shadows, manhole covers, and car tires.
+## ✨ Key Features
+- **🎯 Precise Segmentation**: Beyond simple bounding boxes, it generates masks to pinpoint the exact area of the pothole.
+- **🚀 Rapid Inference**: Optimized for YOLOv8n (nano), ensuring fast processing of large batches of images.
+- **📊 Detailed Annotations**: Automatically overlays confidence scores and summary badges on processed images.
+- **🛠️ Automated Setup**: Built-in dependency guards and model downloaders for a seamless "plug-and-play" experience.
 
----
+## 📈 Model Performance
+- **Model Architecture**: YOLOv8n (Segmentation)
+- **Mean Average Precision (mAP@0.5)**: 0.995
+- **Dataset Source**: [keremberke/pothole-segmentation](https://huggingface.co/keremberke/yolov8n-pothole-segmentation)
 
-## 🚀 Key Features
+## 🚀 Getting Started
 
-* **Multi-Scale Inference Pattern**: To maximize "recall" (so no pothole hides from the AI), it natively scans your images at 3 distinct internal resolutions (`640px`, `960px`, `1280px`). This guarantees that both large close-up craters and tiny background potholes are found.
-* **Non-Maximum Suppression (NMS)**: Because scanning the image 3 times creates multiple overlapping bounding boxes, it uses an advanced computer vision deduplication algorithm (`cv2.dnn.NMSBoxes`) to collapse the extra boxes into perfectly aligned detection zones.
-* **Dynamic Visualization**: The script draws vivid red bounding boxes over the damaged road areas, stamps the exact AI confidence `%` dynamically above the pothole, and sums the total counts in a heads-up-display badge.
-* **TTA Ready / False Positive Resistant**: The heavy internal weights of the `medium` model actively reject features that visually trick lightweight models.
+### 1. Prerequisites
+- Python 3.8+
+- [Git](https://git-scm.com/)
 
----
-
-## 🛠️ Requirements
-You will need an active Python 3.10+ environment installed.
-To install the dependencies, simply run the following in your terminal:
+### 2. Installation
+Clone the repository and install the dependencies:
 ```bash
-pip install torch torchvision opencv-python numpy Pillow
-pip install ultralyticsplus==0.0.23 ultralytics==8.0.21
+# Clone the repository
+git clone <repository-url>
+cd "FINAL - POTHOLE DETECTION SYS"
+
+# Install requirements
+pip install -r requirements.txt
 ```
 
----
+### 3. Download the Model
+Run the download script to fetch the `best.pt` model weights from HuggingFace:
+```bash
+python download_model.py
+```
 
-## 📁 System Architecture
+### 4. Run Detection
+Place your road images (JPG, PNG, WebP) in the `images/` directory, then execute the main script:
+```bash
+python pothole_detection.py
+```
+The annotated results will be saved in the `output_images/` directory.
+
+## 📂 Project Structure
 ```text
-P1/
-├── images/                   ← Drop your road images here (.jpg, .png, etc.)
-├── output_images/            ← Annotated results appear here automatically
-├── download_model.py         ← Script to fetch the Heavy YOLOv8m weights securely
-├── pothole_detection.py      ← The main multi-scale detection engine
-└── best_m.pt                 ← (Auto-downloaded) The 52MB pretrained brain
+.
+├── docs/                   # Documentation assets (hero image, etc.)
+├── images/                 # 📂 Put your input images here
+├── output_images/          # 📂 Processed images will appear here
+├── best.pt                 # 🧠 YOLOv8n Model Weights
+├── download_model.py       # 📥 Script to fetch model weights
+├── pothole_detection.py    # ⚙️ Main detection script
+├── requirements.txt        # 📦 Project dependencies
+└── README.md               # 📖 This file
 ```
 
----
+## 🛠️ Visual Style
+The system uses high-visibility red overlays for detected potholes:
+- **Bounding Boxes**: Clear red rectangles for location.
+- **Segmentation Masks**: Subtle red fill for surface area coverage.
+- **Summary Badge**: Top-left corner counter for total detections in the frame.
 
-## 🤔 How to Run
-
-1. **Prepare your files**
-   Place any images you want to analyze freely into the `images/` directory.
-
-2. **Download AI Weights (First Run Only)**
-   The AI model (`best_m.pt`) is quite large. Run the auto-downloader to fetch it from Hugging Face:
-   ```bash
-   python download_model.py
-   ```
-
-3. **Launch the Engine**
-   Run the main script. The system will process everything in the `images` folder seamlessly:
-   ```bash
-   python pothole_detection.py
-   ```
-
-4. **View the Results**
-   Head to `output_images/` when it prints `Done!` to see your images professionally annotated.
+## 📜 Credits
+Developed using the [Ultralytics](https://github.com/ultralytics/ultralytics) framework and the [keremberke/yolov8n-pothole-segmentation](https://huggingface.co/keremberke/yolov8n-pothole-segmentation) model available on HuggingFace.
 
 ---
-
-### Adjusting Hyperparameters
-If you wish to make the AI stricter or more relaxed, you can edit the top section of `pothole_detection.py`:
-- `CONF_THRESH` (Default `0.01`): The confidence floor. Lower values capture very subtle potholes but run the risk of false positives.
-- `IOU_THRESH` (Default `0.50`): Controls how aggressively overlapping boxes are merged together.
-
-*Powered by PyTorch & Ultralytics*
+*Ensuring safer roads through Artificial Intelligence.*
